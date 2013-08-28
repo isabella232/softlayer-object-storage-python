@@ -43,6 +43,8 @@ class AuthenticatedConnection(BaseAuthenticatedConnection):
         res = requests.request(method, url, *args, **kwargs)
         if kwargs.get('return_response', True):
             res = self._check_success(res)
+            if res.status_code == 401:
+                raise errors.AuthenticationError('Authentication error')
             if res.status_code == 404:
                 raise errors.NotFound('Not found')
             if res.error:
@@ -63,6 +65,7 @@ class AuthenticatedConnection(BaseAuthenticatedConnection):
         if res.status_code == 401:
 
             # Authenticate and try again with a (hopefully) new token
+            self.auth.authenticate()
             self._authenticate()
             res.request.headers.update(self.auth_headers)
             res.request.send(anyway=True)
