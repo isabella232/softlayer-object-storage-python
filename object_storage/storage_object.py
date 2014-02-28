@@ -115,7 +115,7 @@ class StorageObject:
         def _formatter(res):
             self.model = StorageObjectModel(self, self.container, self.name, res.headers)
             return self
-        return self.make_request('HEAD', headers=headers, formatter=_formatter, timeout=5)
+        return self.make_request('HEAD', headers=headers, formatter=_formatter, timeout=10)
 
     def get_info(self):
         """ loads data if not already available and returns the properties """
